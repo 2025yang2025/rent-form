@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>確認收租</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 40px 20px; background: var(--tg-theme-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #333); }
+    button { width: 100%; padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2 id="title">正在讀取資料...</h2>
+  <p>點擊下方按鈕將自動登記今日為最後付款日</p>
+  <button onclick="confirmRent()">💰 確認收到租金</button>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    // 取得網址參數
+    const urlParams = new URLSearchParams(window.location.search);
+    const room = urlParams.get('room');
+    const locationName = urlParams.get('location');
+
+    document.getElementById('title').innerText = `確認收到 ${room} 租金？`;
+
+    function confirmRent() {
+      const OWNER = "你的GitHub帳號";
+      const REPO = "你的專案倉庫名稱";
+      const TOKEN = "你的_GITHUB_PERSONAL_ACCESS_TOKEN";
+
+      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `token ${TOKEN}`,
+          'Accept': 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          event_type: 'confirm_receipt',
+          client_payload: { location: locationName, room: room }
+        })
+      })
+      .then(res => {
+        if(res.status === 204) {
+          alert('✅ 已送出收租確認，GitHub 正在後台更新紀錄...');
+          tg.close();
+        } else {
+          alert('更新失敗，請檢查設定。');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
