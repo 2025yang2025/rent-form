@@ -57,17 +57,16 @@
     // 初始化 Telegram Web App
     const tg = window.Telegram.WebApp;
     tg.ready();
-    tg.expand(); // 讓網頁全螢幕展開
+    tg.expand(); 
 
     function submitToGitHub() {
-      // 這裡填入你的配置
-      const OWNER = "你的GitHub帳號";
-      const REPO = "你的專案倉庫名稱";
-      // 建議申請一個只允許該 Repository Dispatch 權限的 Fine-grained Token
-      const TOKEN = "你的_GITHUB_PERSONAL_ACCESS_TOKEN"; 
-
+      // ─── ⚙️ 請在這裡填入你的設定（確保前後無空白） ───
+      const OWNER = "2025yang2025"; 
+      const REPO = "你的Python後台儲存庫名稱"; 
+      const TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"; // 填入你的 GitHub PAT
+      
       const payload = {
-        location: document.getElementById('location').value,
+        location: document.getElementById('location').value.strip ? document.getElementById('location').value.trim() : document.getElementById('location').value,
         room: document.getElementById('room').value,
         name: document.getElementById('name').value,
         rent: document.getElementById('rent').value,
@@ -82,11 +81,15 @@
         return;
       }
 
-      // 呼叫 GitHub API 觸發後台 Actions 腳本
-      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
+      // 建立純英數的認證字串，徹底阻絕非 ISO-8859-1 編碼問題
+      const authHeader = 'token ' + TOKEN;
+      const apiUrl = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/dispatches';
+
+      // 呼叫 GitHub API 
+      fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `token ${TOKEN}`,
+          'Authorization': authHeader,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
@@ -98,9 +101,9 @@
       .then(response => {
         if (response.status === 204) {
           alert('🚀 資料已成功提交給 GitHub 排程，請待 30 秒後更新！');
-          tg.close(); // 自動關閉 Telegram 網頁彈出視窗
+          tg.close(); 
         } else {
-          alert('提交失敗，請檢查 Token 設定是否正確。');
+          alert('提交失敗，錯誤代碼: ' + response.status + '。請檢查 Token 與儲存庫設定。');
         }
       })
       .catch(err => alert('發生錯誤: ' + err));
