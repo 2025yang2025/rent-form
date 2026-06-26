@@ -8,6 +8,7 @@
   <style>
     body { font-family: sans-serif; text-align: center; padding: 40px 20px; background: var(--tg-theme-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #333); }
     button { width: 100%; padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+    button:active { opacity: 0.8; }
   </style>
 </head>
 <body>
@@ -24,17 +25,23 @@
     const room = urlParams.get('room');
     const locationName = urlParams.get('location');
 
-    document.getElementById('title').innerText = `確認收到 ${room} 租金？`;
+    // 安全防護：避免參數為空時畫面破碎
+    document.getElementById('title').innerText = room ? `確認收到 ${room} 租金？` : '確認收到租金？';
 
     function confirmRent() {
-      const OWNER = "你的GitHub帳號";
-      const REPO = "你的專案倉庫名稱";
-      const TOKEN = "你的_GITHUB_PERSONAL_ACCESS_TOKEN";
+      // ─── ⚙️ 請在這裡填入你的設定（確保前後無空白） ───
+      const OWNER = "2025yang2025"; 
+      const REPO = "你的Python後台儲存庫名稱"; 
+      const TOKEN = "ghp_xxxxxxxxxxxxxxxxxxxx"; // 填入你的 GitHub PAT
 
-      fetch(`https://api.github.com/repos/${OWNER}/${REPO}/dispatches`, {
+      // 建立純英數的認證字串與網址，阻絕非 ISO-8859-1 編碼問題
+      const authHeader = 'token ' + TOKEN;
+      const apiUrl = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/dispatches';
+
+      fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `token ${TOKEN}`,
+          'Authorization': authHeader,
           'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
@@ -44,13 +51,14 @@
         })
       })
       .then(res => {
-        if(res.status === 204) {
+        if (res.status === 204) {
           alert('✅ 已送出收租確認，GitHub 正在後台更新紀錄...');
           tg.close();
         } else {
-          alert('更新失敗，請檢查設定。');
+          alert('更新失敗，錯誤代碼: ' + res.status + '。請檢查 Token 與儲存庫權限設定。');
         }
-      });
+      })
+      .catch(err => alert('發生錯誤: ' + err));
     }
   </script>
 </body>
