@@ -25,21 +25,17 @@
     const room = urlParams.get('room');
     const locationName = urlParams.get('location');
 
-    // 安全防護：避免參數為空時畫面破碎
     document.getElementById('title').innerText = room ? `確認收到 ${room} 租金？` : '確認收到租金？';
 
     function confirmRent() {
-      // ─── ⚙️ n8n 中繼站設定 ───
-      // 這裡已經換成你剛剛建立成功的 n8n 正式 Webhook 網址
+      // ─── ⚙️ 呼叫你的 n8n 中繼站 ───
       const n8nWebhookUrl = "https://n8ncenter-rentroom.onrender.com/webhook/rent-confirm"; 
 
-      // 封裝準備丟給 n8n 的房間數據
       const payload = {
         location: locationName,
         room: room
       };
 
-      // 將資料 POST 送往 n8n 處理
       fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: {
@@ -48,10 +44,9 @@
         body: JSON.stringify(payload)
       })
       .then(res => {
-        // n8n Webhook 預設成功接收會回傳 200 OK
         if (res.ok) {
           alert('✅ 已送出收租確認，系統正在後台更新紀錄...');
-          tg.close(); // 成功後自動關閉 Telegram 內建網頁彈窗
+          tg.close();
         } else {
           alert('連線至中繼伺服器失敗，錯誤代碼: ' + res.status);
         }
