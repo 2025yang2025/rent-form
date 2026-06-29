@@ -29,36 +29,34 @@
     document.getElementById('title').innerText = room ? `確認收到 ${room} 租金？` : '確認收到租金？';
 
     function confirmRent() {
-      // ─── ⚙️ 請在這裡填入你的設定（確保前後無空白） ───
-      const OWNER = "2025yang2025"; 
-      const REPO = "rentroom"; 
-      const TOKEN = ""; // 💡 這裡直接留空！不要放任何東西！
+      // ─── ⚙️ n8n 中繼站設定 ───
+      // 這裡已經換成你剛剛建立成功的 n8n 正式 Webhook 網址
+      const n8nWebhookUrl = "https://n8ncenter-rentroom.onrender.com/webhook/rent-confirm"; 
 
-      // 建立純英數的認證字串與網址，阻絕非 ISO-8859-1 編碼問題
-      const authHeader = 'token ' + TOKEN;
-      const apiUrl = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/dispatches';
+      // 封裝準備丟給 n8n 的房間數據
+      const payload = {
+        location: locationName,
+        room: room
+      };
 
-      fetch(apiUrl, {
+      // 將資料 POST 送往 n8n 處理
+      fetch(n8nWebhookUrl, {
         method: 'POST',
         headers: {
-          'Authorization': authHeader,
-          'Accept': 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          event_type: 'confirm_receipt',
-          client_payload: { location: locationName, room: room }
-        })
+        body: JSON.stringify(payload)
       })
       .then(res => {
-        if (res.status === 204) {
-          alert('✅ 已送出收租確認，GitHub 正在後台更新紀錄...');
-          tg.close();
+        // n8n Webhook 預設成功接收會回傳 200 OK
+        if (res.ok) {
+          alert('✅ 已送出收租確認，系統正在後台更新紀錄...');
+          tg.close(); // 成功後自動關閉 Telegram 內建網頁彈窗
         } else {
-          alert('更新失敗，錯誤代碼: ' + res.status + '。請檢查 Token 與儲存庫權限設定。');
+          alert('連線至中繼伺服器失敗，錯誤代碼: ' + res.status);
         }
       })
-      .catch(err => alert('發生錯誤: ' + err));
+      .catch(err => alert('連線發生錯誤: ' + err));
     }
   </script>
 </body>
