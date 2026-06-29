@@ -20,7 +20,6 @@
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    // 取得網址參數
     const urlParams = new URLSearchParams(window.location.search);
     const room = urlParams.get('room');
     const locationName = urlParams.get('location');
