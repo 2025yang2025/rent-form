@@ -1,113 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>新增房客資料</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--tg-theme-bg-color, #f5f5f5); color: var(--tg-theme-text-color, #333); padding: 20px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px; }
-    input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
-    button { width: 100%; padding: 12px; background-color: var(--tg-theme-button-color, #2481cc); color: var(--tg-theme-button-text-color, #fff); border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-    button:active { opacity: 0.8; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 新增房客資料</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
-  <h3>➕ 新增房客資料</h3>
-  
-  <div class="form-group">
-    <label>地點</label>
-    <input type="text" id="location" placeholder="例如：台南市永康區">
-  </div>
-  <div class="form-group">
-    <label>房間</label>
-    <input type="text" id="room" placeholder="例如：A棟301室">
-  </div>
-  <div class="form-group">
-    <label>房客姓名</label>
-    <input type="text" id="name" placeholder="例如：陳大同">
-  </div>
-  <div class="form-group">
-    <label>每月租金</label>
-    <input type="number" id="rent" placeholder="例如：12000">
-  </div>
-  <div class="form-group">
-    <label>付款日期 (每月幾號)</label>
-    <input type="number" id="pay_day" placeholder="例如：5" min="1" max="31">
-  </div>
-  <div class="form-group">
-    <label>租約開始日期</label>
-    <input type="date" id="contract_start">
-  </div>
-  <div class="form-group">
-    <label>租約結束日期</label>
-    <input type="date" id="contract_end">
-  </div>
-  <div class="form-group">
-    <label>最後付款日期 (選填)</label>
-    <input type="date" id="last_paid_date">
-  </div>
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">➕ 填寫新房客資料</h2>
+        
+        <form id="tenantForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📍 地點 (如：台南)</label>
+                <input type="text" id="location" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">🚪 房間號碼 (如：101房)</label>
+                <input type="text" id="room" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">👤 房客姓名</label>
+                <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">💰 每月租金</label>
+                <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字，如 5 號就填 5)</label>
+                <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
 
-  <button type="button" onclick="submitToGitHub()">🚀 確認送出</button>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📝 合約開始日</label>
+                <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
 
-  <script>
-    // 初始化 Telegram Web App
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand(); 
+            <div>
+                <label class="block text-sm font-medium text-gray-700">⏳ 合約結束日</label>
+                <input type="date" id="contract_end" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200">
+                🚀 提交資料至系統
+            </button>
+        </form>
+    </div>
 
-    function submitToGitHub() {
-      // ─── ⚙️ 請在這裡填入你的設定（確保前後無空白） ───
-      const OWNER = "2025yang2025"; 
-      const REPO = "rentroom"; 
-      const TOKEN = ""; // 💡 這裡直接留空！不要放任何東西！
-      
-      const payload = {
-        location: document.getElementById('location').value.strip ? document.getElementById('location').value.trim() : document.getElementById('location').value,
-        room: document.getElementById('room').value,
-        name: document.getElementById('name').value,
-        rent: document.getElementById('rent').value,
-        pay_day: document.getElementById('pay_day').value,
-        contract_start: document.getElementById('contract_start').value,
-        contract_end: document.getElementById('contract_end').value,
-        last_paid_date: document.getElementById('last_paid_date').value
-      };
+    <script>
+        // 🌟 請把下方引號內改成你 n8n 負責處理「新增房客」的 Webhook Production 網址
+        const n8nAddTenantWebhookUrl = "https://n8ncenter-rentroom.onrender.com/webhook/rent-confirm"; 
 
-      if(!payload.location || !payload.room || !payload.name || !payload.rent) {
-        alert("請填寫基本必填欄位（地點、房間、姓名、租金）");
-        return;
-      }
+        document.getElementById('tenantForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const payload = {
+                action_type: "add_tenant",
+                location: document.getElementById('location').value,
+                room: document.getElementById('room').value,
+                name: document.getElementById('name').value,
+                rent: parseInt(document.getElementById('rent').value),
+                pay_day: parseInt(document.getElementById('pay_day').value),
+                contract_start: document.getElementById('contract_start').value,
+                contract_end: document.getElementById('contract_end').value,
+                last_paid_date: ""
+            };
 
-      // 建立純英數的認證字串，徹底阻絕非 ISO-8859-1 編碼問題
-      const authHeader = 'token ' + TOKEN;
-      const apiUrl = 'https://api.github.com/repos/' + OWNER + '/' + REPO + '/dispatches';
-
-      // 呼叫 GitHub API 
-      fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': authHeader,
-          'Accept': 'application/vnd.github.v3+json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          event_type: 'add_new_tenant',
-          client_payload: payload
-        })
-      })
-      .then(response => {
-        if (response.status === 204) {
-          alert('🚀 資料已成功提交給 GitHub 排程，請待 30 秒後更新！');
-          tg.close(); 
-        } else {
-          alert('提交失敗，錯誤代碼: ' + response.status + '。請檢查 Token 與儲存庫設定。');
-        }
-      })
-      .catch(err => alert('發生錯誤: ' + err));
-    }
-  </script>
+            fetch(n8nAddTenantWebhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => {
+                if (res.ok) {
+                    alert('✅ 資料已成功送出！後台正在寫入 tenants.json...');
+                    document.getElementById('tenantForm').reset();
+                } else {
+                    alert('❌ 傳送至 n8n 失敗，錯誤代碼: ' + res.status);
+                }
+            })
+            .catch(err => {
+                alert('連線發生錯誤: ' + err);
+            });
+        });
+    </script>
 </body>
 </html>
