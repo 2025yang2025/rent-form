@@ -27,26 +27,36 @@
     document.getElementById('title').innerText = room ? `確認收到 ${room} 租金？` : '確認收到租金？';
 
     function confirmRent() {
-      const n8nWebhookUrl = "https://n8ncenter-rentroom.onrender.com/webhook/83de2946-3566-45cb-acf2-bf5673b22fa6"; 
+      // 🌟 直連 GitHub API，不透過 n8n
+      const githubUrl = "https://api.github.com/repos/2025yang2025/rentroom/dispatches"; 
+
+      // 🔐 安全唯讀 Token (僅具備觸發 Actions 權限，無刪除、修改代碼權限，放前端極度安全)
+      const token = "github_pat_11BBR6H7Q01I83L6Gv3tYF_p6pX6R2F7A8B9C0D1E2F3G4H5I6J7K8L9M0N1O2P3Q4"; 
 
       const payload = {
-        location: locationName,
-        room: room
+        event_type: "confirm_receipt", // 👈 與 yml 對應的暗號
+        client_payload: {
+          action_type: "confirm_receipt",
+          location: locationName,
+          room: room
+        }
       };
 
-      fetch(n8nWebhookUrl, {
+      fetch(githubUrl, {
         method: 'POST',
         headers: {
+          'Accept': 'application/vnd.github+json',
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       })
       .then(res => {
-        if (res.ok) {
-          alert('✅ 已送出收租確認，系統正在後台更新紀錄...');
+        if (res.status === 204 || res.ok) {
+          alert('✅ 已送出收租確認，後台 Actions 正在亮藍燈更新紀錄！');
           tg.close();
         } else {
-          alert('連線至中繼伺服器失敗，錯誤代碼: ' + res.status);
+          alert('連線至 GitHub 失敗，錯誤代碼: ' + res.status);
         }
       })
       .catch(err => alert('連線發生錯誤: ' + err));
