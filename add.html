@@ -1,4 +1,52 @@
-<script>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👑 新增房客資料</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">➕ 填寫新房客資料</h2>
+        
+        <form id="tenantForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📍 地點 (如：台南)</label>
+                <input type="text" id="location" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">🚪 房間號碼 (如：101房)</label>
+                <input type="text" id="room" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">👤 房客姓名</label>
+                <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">💰 每月租金</label>
+                <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字)</label>
+                <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">📝 合約開始日</label>
+                <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">⏳ 合約結束日</label>
+                <input type="date" id="contract_end" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md">
+                🚀 提交資料至系統
+            </button>
+        </form>
+    </div>
+
+    <script>
         document.getElementById('tenantForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -8,12 +56,9 @@
             const rawPart1 = "github_pat_11BQS5FCQ0uQe5yUEdPwCb_"; 
             const rawPart2 = "6TLcLvVGpbbSha5BYxTrLO1ohJtnxAWWYVc4CzI0j2GMWHQTSAWLMZm785i"; 
 
-            // 🧼 【核心修復：強制清洗法】
-            // 用正規表示式 [^A-Za-z0-9_] 把所有「非英文、非數字、非底線」的隱形怪字元全部當場蒸發
+            // 🧼 暴力清洗法：自動蒸發所有隱形控制字元與全形雜質
             const cleanPart1 = rawPart1.replace(/[^A-Za-z0-9_]/g, '');
             const cleanPart2 = rawPart2.replace(/[^A-Za-z0-9_]/g, '');
-            
-            // 🧩 拼裝出絕對純淨的 Token
             const token = cleanPart1 + cleanPart2;
 
             const payload = {
@@ -31,7 +76,7 @@
                 }
             };
 
-            // 🛡️ 建立乾淨的 Header
+            // 🛡️ 採用最標準的物件化 Headers 設定，避免任何編碼異常
             const myHeaders = new Headers();
             myHeaders.append("Accept", "application/vnd.github+json");
             myHeaders.append("Authorization", "Bearer " + token);
@@ -53,3 +98,5 @@
             .catch(err => alert('連線發生錯誤: ' + err));
         });
     </script>
+</body>
+</html>
