@@ -14,80 +14,78 @@
         <form id="tenantForm" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">📍 地點 (如：台南)</label>
-                <input type="text" id="location" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="location" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            
             <div>
                 <label class="block text-sm font-medium text-gray-700">🚪 房間號碼 (如：101房)</label>
-                <input type="text" id="room" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="room" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            
             <div>
                 <label class="block text-sm font-medium text-gray-700">👤 房客姓名</label>
-                <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            
             <div>
                 <label class="block text-sm font-medium text-gray-700">💰 每月租金</label>
-                <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            
             <div>
-                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字，如 5 號就填 5)</label>
-                <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字)</label>
+                <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-
             <div>
                 <label class="block text-sm font-medium text-gray-700">📝 合約開始日</label>
-                <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-
             <div>
                 <label class="block text-sm font-medium text-gray-700">⏳ 合約結束日</label>
-                <input type="date" id="contract_end" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                <input type="date" id="contract_end" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            
-            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition duration-200">
+            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md">
                 🚀 提交資料至系統
             </button>
         </form>
     </div>
 
     <script>
-        // 🌟 請把下方引號內改成你 n8n 負責處理「新增房客」的 Webhook Production 網址
-        const n8nAddTenantWebhookUrl = "https://n8ncenter-rentroom.onrender.com/webhook/83de2946-3566-45cb-acf2-bf5673b22fa6"; 
-
         document.getElementById('tenantForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
+            const githubUrl = "https://api.github.com/repos/2025yang2025/rentroom/dispatches"; 
+            const token = "github_pat_11BBR6H7Q01I83L6Gv3tYF_p6pX6R2F7A8B9C0D1E2F3G4H5I6J7K8L9M0N1O2P3Q4"; // 🌟 記得改成你的 Token
+
             const payload = {
-                action_type: "add_tenant",
-                location: document.getElementById('location').value,
-                room: document.getElementById('room').value,
-                name: document.getElementById('name').value,
-                rent: parseInt(document.getElementById('rent').value),
-                pay_day: parseInt(document.getElementById('pay_day').value),
-                contract_start: document.getElementById('contract_start').value,
-                contract_end: document.getElementById('contract_end').value,
-                last_paid_date: ""
+                event_type: "add_tenant", // 👈 對應 yml 的新增房客暗號
+                client_payload: {
+                    action_type: "add_tenant",
+                    location: document.getElementById('location').value,
+                    room: document.getElementById('room').value,
+                    name: document.getElementById('name').value,
+                    rent: parseInt(document.getElementById('rent').value),
+                    pay_day: parseInt(document.getElementById('pay_day').value),
+                    contract_start: document.getElementById('contract_start').value,
+                    contract_end: document.getElementById('contract_end').value,
+                    last_paid_date: ""
+                }
             };
 
-            fetch(n8nAddTenantWebhookUrl, {
+            fetch(githubUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Accept': 'application/vnd.github+json',
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
                 body: JSON.stringify(payload)
             })
             .then(res => {
-                if (res.ok) {
-                    alert('✅ 資料已成功送出！後台正在寫入 tenants.json...');
+                if (res.status === 204 || res.ok) {
+                    alert('✅ 新房客資料已成功送出！後台正在寫入 json...');
                     document.getElementById('tenantForm').reset();
                 } else {
-                    alert('❌ 傳送至 n8n 失敗，錯誤代碼: ' + res.status);
+                    alert('❌ 傳送至 GitHub 失敗，錯誤代碼: ' + res.status);
                 }
             })
-            .catch(err => {
-                alert('連線發生錯誤: ' + err);
-            });
+            .catch(err => alert('連線發生錯誤: ' + err));
         });
     </script>
 </body>
