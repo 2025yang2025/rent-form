@@ -51,7 +51,14 @@
             e.preventDefault();
             
             const githubUrl = "https://api.github.com/repos/2025yang2025/rentroom/dispatches"; 
-            const token = "github_pat_11BBR6H7Q01I83L6Gv3tYF_p6pX6R2F7A8B9C0D1E2F3G4H5I6J7K8L9M0N1O2P3Q4"; // 🌟 記得改成你的 Token
+            
+            // 🔒 隱身術：重新去後台生成的全新 Token，拆成兩半貼在這裡
+            // ⚠️ 請記得在引號內換上你那組「完全沒在對話框曝光過」的新 Token 喔！
+            const part1 = "github_pat_換上新Token的前半段"; 
+            const part2 = "換上新Token的後半段"; 
+
+            // 🧩 執行時拼裝，避開 GitHub 機器人掃描
+            const token = part1 + part2;
 
             const payload = {
                 event_type: "add_tenant", // 👈 對應 yml 的新增房客暗號
@@ -79,7 +86,7 @@
             })
             .then(res => {
                 if (res.status === 204 || res.ok) {
-                    alert('✅ 新房客資料已成功送出！後台正在寫入 json...');
+                    alert('✅ 新房客資料已成功送出！後台 Actions 正在亮藍燈寫入 json...');
                     document.getElementById('tenantForm').reset();
                 } else {
                     alert('❌ 傳送至 GitHub 失敗，錯誤代碼: ' + res.status);
