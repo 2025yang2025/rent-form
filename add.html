@@ -69,12 +69,12 @@
             const rawPart2 = "6TLcLvVGpbbSha5BYxTrLO1ohJtnxAWWYVc4CzI0j2GMWHQTSAWLMZm785i"; 
             const token = (rawPart1 + rawPart2).replace(/[^A-Za-z0-9_]/g, '');
 
-            // 讀取數值，若空白則傳送 null 讓 Python 知道不要覆蓋舊資料
             const rentVal = document.getElementById('rent').value;
             const depositVal = document.getElementById('deposit').value;
             const elecVal = document.getElementById('electricity').value;
             const payDayVal = document.getElementById('pay_day').value;
 
+            // 修正：將原本誤寫的 int() 改回正確的 parseInt()
             const payload = {
                 event_type: "add_tenant", 
                 client_payload: {
@@ -82,9 +82,9 @@
                     location: document.getElementById('location').value,
                     room: document.getElementById('room').value,
                     name: document.getElementById('name').value,
-                    rent: rentVal ? int(rentVal) : null,
+                    rent: rentVal ? parseInt(rentVal) : null,
                     deposit: depositVal ? parseInt(depositVal) : null,
-                    electricity: elecVal ? parseInt(elecVal) : null, // 👈 新增電費欄位
+                    electricity: elecVal ? parseInt(elecVal) : null, 
                     pay_day: payDayVal ? parseInt(payDayVal) : null,
                     contract_start: document.getElementById('contract_start').value || null,
                     contract_end: document.getElementById('contract_end').value || null
