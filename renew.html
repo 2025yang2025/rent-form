@@ -18,6 +18,10 @@
                 <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
+                <label class="block text-sm font-medium text-gray-700">🔒 新押金總額 (若無變更維持原樣)</label>
+                <input type="number" id="deposit" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700">📅 新合約開始日</label>
                 <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
@@ -32,7 +36,6 @@
     </div>
 
     <script>
-        // 🔍 自動從網址抓取房間與地點參數
         const urlParams = new URLSearchParams(window.location.search);
         const room = urlParams.get('room') || '';
         const locationStr = urlParams.get('location') || '';
@@ -46,18 +49,18 @@
             
             const githubUrl = "https://api.github.com/repos/2025yang2025/rentroom/dispatches"; 
             
-            // 🔒 密鑰雙段拼接與暴力清洗
             const rawPart1 = "github_pat_11BQS5FCQ0uQe5yUEdPwCb_"; 
             const rawPart2 = "6TLcLvVGpbbSha5BYxTrLO1ohJtnxAWWYVc4CzI0j2GMWHQTSAWLMZm785i"; 
             const token = (rawPart1 + rawPart2).replace(/[^A-Za-z0-9_]/g, '');
 
             const payload = {
-                event_type: "add_tenant", // 統一走同一個工作流觸發 Python
+                event_type: "add_tenant",
                 client_payload: {
-                    action_type: "renew_contract", // 👈 給 Python 的續約暗號
+                    action_type: "renew_contract",
                     location: locationStr,
                     room: room,
                     rent: parseInt(document.getElementById('rent').value),
+                    deposit: parseInt(document.getElementById('deposit').value), // 👈 新增押金
                     contract_start: document.getElementById('contract_start').value,
                     contract_end: document.getElementById('contract_end').value
                 }
@@ -75,8 +78,8 @@
             })
             .then(res => {
                 if (res.status === 204 || res.ok) {
-                    alert('✅ 續約資訊已成功送出！後台正在變更合約日期...');
-                    window.close(); // 順利完工後自動關閉分頁
+                    alert('✅ 續約與押金資訊已成功變更！');
+                    window.close();
                 } else {
                     alert('❌ 傳送失敗，錯誤代碼: ' + res.status);
                 }
