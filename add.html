@@ -3,49 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>👑 新增房客資料</title>
+    <title>👑 房客管理（新增/修改）</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
 
     <div class="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">➕ 填寫新房客資料</h2>
+        <h2 class="text-2xl font-bold text-gray-800 text-center">➕ 房客資料管理</h2>
+        <p class="text-xs text-gray-500 text-center mt-1 mb-6">💡 若要追加押金或更新電費，只需填寫地點、房號、姓名與欲修改的欄位即可！</p>
         
         <form id="tenantForm" class="space-y-4">
+            <div class="bg-blue-50 p-3 rounded-xl space-y-3 border border-blue-100">
+                <div>
+                    <label class="block text-sm font-semibold text-blue-900">📍 地點 (如：台南)</label>
+                    <input type="text" id="location" required class="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-blue-900">🚪 房間號碼 (如：101房)</label>
+                    <input type="text" id="room" required class="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-blue-900">👤 房客姓名</label>
+                    <input type="text" id="name" required class="mt-1 block w-full p-2 bg-white border border-gray-300 rounded-lg shadow-sm">
+                </div>
+            </div>
+
             <div>
-                <label class="block text-sm font-medium text-gray-700">📍 地點 (如：台南)</label>
-                <input type="text" id="location" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700">💰 每月租金 (不改不填)</label>
+                <input type="number" id="rent" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">🚪 房間號碼 (如：101房)</label>
-                <input type="text" id="room" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700">🔒 押金總額 (追加/修改在此填新總額)</label>
+                <input type="number" id="deposit" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">👤 房客姓名</label>
-                <input type="text" id="name" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700">⚡ 當期應繳電費 (新抄表金額)</label>
+                <input type="number" id="electricity" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" placeholder="例如：1250">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">💰 每月租金</label>
-                <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (不改不填)</label>
+                <input type="number" id="pay_day" min="1" max="31" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">🔒 押金總額</label>
-                <input type="number" id="deposit" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" placeholder="例如：17000">
+                <label class="block text-sm font-medium text-gray-700">📝 合約開始日 (不改不填)</label>
+                <input type="date" id="contract_start" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字)</label>
-                <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
+                <label class="block text-sm font-medium text-gray-700">⏳ 合約結束日 (不改不填)</label>
+                <input type="date" id="contract_end" class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">📝 合約開始日</label>
-                <input type="date" id="contract_start" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">⏳ 合約結束日</label>
-                <input type="date" id="contract_end" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
-            </div>
+            
             <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-md">
-                🚀 提交資料至系統
+                🚀 儲存並同步至系統
             </button>
         </form>
     </div>
@@ -58,10 +67,13 @@
             
             const rawPart1 = "github_pat_11BQS5FCQ0uQe5yUEdPwCb_"; 
             const rawPart2 = "6TLcLvVGpbbSha5BYxTrLO1ohJtnxAWWYVc4CzI0j2GMWHQTSAWLMZm785i"; 
+            const token = (rawPart1 + rawPart2).replace(/[^A-Za-z0-9_]/g, '');
 
-            const cleanPart1 = rawPart1.replace(/[^A-Za-z0-9_]/g, '');
-            const cleanPart2 = rawPart2.replace(/[^A-Za-z0-9_]/g, '');
-            const token = cleanPart1 + cleanPart2;
+            // 讀取數值，若空白則傳送 null 讓 Python 知道不要覆蓋舊資料
+            const rentVal = document.getElementById('rent').value;
+            const depositVal = document.getElementById('deposit').value;
+            const elecVal = document.getElementById('electricity').value;
+            const payDayVal = document.getElementById('pay_day').value;
 
             const payload = {
                 event_type: "add_tenant", 
@@ -70,12 +82,12 @@
                     location: document.getElementById('location').value,
                     room: document.getElementById('room').value,
                     name: document.getElementById('name').value,
-                    rent: parseInt(document.getElementById('rent').value),
-                    deposit: parseInt(document.getElementById('deposit').value), // 👈 新增押金
-                    pay_day: parseInt(document.getElementById('pay_day').value),
-                    contract_start: document.getElementById('contract_start').value,
-                    contract_end: document.getElementById('contract_end').value,
-                    last_paid_date: ""
+                    rent: rentVal ? int(rentVal) : null,
+                    deposit: depositVal ? parseInt(depositVal) : null,
+                    electricity: elecVal ? parseInt(elecVal) : null, // 👈 新增電費欄位
+                    pay_day: payDayVal ? parseInt(payDayVal) : null,
+                    contract_start: document.getElementById('contract_start').value || null,
+                    contract_end: document.getElementById('contract_end').value || null
                 }
             };
 
@@ -91,7 +103,7 @@
             })
             .then(res => {
                 if (res.status === 204 || res.ok) {
-                    alert('✅ 新房客與押金資料已成功送出！');
+                    alert('✅ 房客資料已成功送出更新！');
                     document.getElementById('tenantForm').reset();
                 } else {
                     alert('❌ 傳送至 GitHub 失敗，錯誤代碼: ' + res.status);
