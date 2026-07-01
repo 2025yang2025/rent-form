@@ -29,6 +29,10 @@
                 <input type="number" id="rent" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
             <div>
+                <label class="block text-sm font-medium text-gray-700">🔒 押金總額</label>
+                <input type="number" id="deposit" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm" placeholder="例如：17000">
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-gray-700">📅 每月繳租日 (填數字)</label>
                 <input type="number" id="pay_day" min="1" max="31" required class="mt-1 block w-full p-2 border border-gray-300 rounded-lg shadow-sm">
             </div>
@@ -52,11 +56,9 @@
             
             const githubUrl = "https://api.github.com/repos/2025yang2025/rentroom/dispatches"; 
             
-            // 🔒 這是你原本貼的 Token 兩段
             const rawPart1 = "github_pat_11BQS5FCQ0uQe5yUEdPwCb_"; 
             const rawPart2 = "6TLcLvVGpbbSha5BYxTrLO1ohJtnxAWWYVc4CzI0j2GMWHQTSAWLMZm785i"; 
 
-            // 🧼 暴力清洗法：自動蒸發所有隱形控制字元與全形雜質
             const cleanPart1 = rawPart1.replace(/[^A-Za-z0-9_]/g, '');
             const cleanPart2 = rawPart2.replace(/[^A-Za-z0-9_]/g, '');
             const token = cleanPart1 + cleanPart2;
@@ -69,6 +71,7 @@
                     room: document.getElementById('room').value,
                     name: document.getElementById('name').value,
                     rent: parseInt(document.getElementById('rent').value),
+                    deposit: parseInt(document.getElementById('deposit').value), // 👈 新增押金
                     pay_day: parseInt(document.getElementById('pay_day').value),
                     contract_start: document.getElementById('contract_start').value,
                     contract_end: document.getElementById('contract_end').value,
@@ -76,7 +79,6 @@
                 }
             };
 
-            // 🛡️ 採用最標準的物件化 Headers 設定，避免任何編碼異常
             const myHeaders = new Headers();
             myHeaders.append("Accept", "application/vnd.github+json");
             myHeaders.append("Authorization", "Bearer " + token);
@@ -89,7 +91,7 @@
             })
             .then(res => {
                 if (res.status === 204 || res.ok) {
-                    alert('✅ 新房客資料已成功送出！後台 Actions 正在亮藍燈寫入 json...');
+                    alert('✅ 新房客與押金資料已成功送出！');
                     document.getElementById('tenantForm').reset();
                 } else {
                     alert('❌ 傳送至 GitHub 失敗，錯誤代碼: ' + res.status);
